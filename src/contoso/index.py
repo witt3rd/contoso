@@ -12,6 +12,7 @@ class ProductData(BaseModel):
     id: int
     name: str
     description: str
+    inventory_level: int
 
 
 # Pydantic model for search results
@@ -20,20 +21,22 @@ class ProductMatch(BaseModel):
     name: str
     description: str
     score: int
+    inventory_level: int
 
 
 # Sample product data (now typed for clarity, though FastAPI will use models for I/O)
 products: list[ProductData] = [  # Changed to built-in list
     ProductData(
-        id=1, name="Widget A", description="A high-quality widget for everyday use."
+        id=1, name="Widget A", description="A high-quality widget for everyday use.", inventory_level=100
     ),
     ProductData(
-        id=2, name="Widget B", description="An advanced widget with extra features."
+        id=2, name="Widget B", description="An advanced widget with extra features.", inventory_level=50
     ),
     ProductData(
         id=3,
         name="Gadget X",
         description="A versatile gadget for various applications.",
+        inventory_level=75,
     ),
 ]
 
@@ -70,6 +73,7 @@ async def search_products(
                     name=original_product.name,
                     description=original_product.description,
                     score=int(score),  # Ensure score is int
+                    inventory_level=original_product.inventory_level,
                 )
             )
     return result
